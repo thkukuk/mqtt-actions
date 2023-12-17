@@ -1,0 +1,47 @@
+# Optional, if set, /healthz liveness probe and /readyz readiness
+# probes will be provided
+#health_check: ":8080"
+verbose: true
+mqtt:
+  # Required: The MQTT broker to connect to
+  broker: mqtt.example.com
+  # Optional: Port of the MQTT broker
+  port: 8883
+  protocol: mqtts
+  # Optional: Username and Password for authenticating with the MQTT Server
+  #user: <username>
+  #password: <password>
+  # Optional: Used to specify ClientID. The default is <hostname>-<pid>
+  # client_id: somedevice
+  # The MQTT QoS level
+  qos: 0
+  # MQTT retain messages
+  retain: false
+actions:
+  - name: IKEA Button 1
+    # topic to subscribe on
+    watch: zigbee2mqtt/IKEA-Shortcut-Button1
+    # for JSON values, e.g.: {"action":"on",...}
+    path: action
+    # execute if message is "on"
+    trigger: on
+    action:
+    # Publish message "toogle" for 1. Shelly Plus Plug S
+    - topic: shellies/shelly-plus-plug-s1/command/switch:0
+      message: toggle
+    # Publish message "toogle" for 2. Shelly Plus Plug S
+    - topic: shellies/shelly-plus-plug-s2/command/switch:0
+      message: toggle
+  # Switch on two Shelly Plus Plug S on sunset
+  - name: Sunset timer
+    # topic to subscribe on
+    watch: timer/sun
+    # No json, execute if message is "sunset"
+    trigger: sunset
+    action:
+    # Publish message "on" for 1. Shelly Plus Plug S
+    - topic: shellies/shelly-plus-plug-s1/command/switch:0
+      message: on
+    # Publish message "on" for 2. Shelly Plus Plug S
+    - topic: shellies/shelly-plus-plug-s2/command/switch:0
+      message: on
