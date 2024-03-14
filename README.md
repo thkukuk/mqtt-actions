@@ -134,6 +134,7 @@ The action sections define, for which MQTT topic the program should look, how to
 * **path** is the path inside the JSON struct, if the message is in JSON format. The names are separated via "dots". More information about this can be found in the `find` examples of the [gojsonq](https://github.com/thedevsaddam/gojsonq) documentation.
 * **trigger** is the content of the message which triggers this action.
 * **action** is a list of **topic** and **message** pairs which will be published.
+* **enabled** is by default **true** and allows to disable an action section.
 
 ## Environment Variables
 

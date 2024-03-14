@@ -61,6 +61,7 @@ type ActionType struct {
 		Topic   string `yaml:"topic"`
 		Message string `yaml:"message"`
 	} `yaml:"action"`
+	Enabled *bool  `yaml:"enabled,omitempty"`
 }
 
 var (
@@ -91,7 +92,8 @@ func msgHandler(client mqtt.Client, msg mqtt.Message) {
 				log.Debugf("Found topic: %s\n", Config.Actions[i].Name)
 			}
 			message, _ := getMsgValue(Config.Actions[i], msg)
-			if len(message) > 0 && message == Config.Actions[i].Trigger {
+			if len(message) > 0 && message == Config.Actions[i].Trigger &&
+				(Config.Actions[i].Enabled == nil || *Config.Actions[i].Enabled == true) {
 				if Verbose {
 					log.Debugf("Found message match: %s\n", message)
 				} else {
