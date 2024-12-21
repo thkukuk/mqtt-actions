@@ -1,4 +1,4 @@
-// Copyright 2023 Thorsten Kukuk
+// Copyright 2023, 2024 Thorsten Kukuk
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -53,15 +53,17 @@ type MQTTConfig struct {
 }
 
 type ActionType struct {
-	Name    string `yaml:"name"`
-	Watch   string `yaml:"watch"`
-	Path    string `yaml:"path"`
-	Trigger string `yaml:"trigger"`
-	Action  []struct {
-		Topic   string `yaml:"topic"`
-		Message string `yaml:"message"`
+	Name      string `yaml:"name"`
+	Watch     string `yaml:"watch"`
+	Path      string `yaml:"path"`
+	Trigger   string `yaml:"trigger"`
+	Action    []struct {
+		  Topic   string `yaml:"topic"`
+		  Message string `yaml:"message"`
 	} `yaml:"action"`
-	Enabled *bool  `yaml:"enabled,omitempty"`
+	Enabled   *bool  `yaml:"enabled,omitempty"`
+	Ignore2nd *bool  `yaml:"ignore_second,omitempty"`
+	Counter   byte
 }
 
 var (
@@ -99,11 +101,22 @@ func msgHandler(client mqtt.Client, msg mqtt.Message) {
 				} else {
 					log.Infof("Execute '%s'\n", Config.Actions[i].Name)
 				}
+				if Config.Actions[i].Ignore2nd != nil || *Config.Actions[i].Ignore2nd == true {
+				   	if Config.Actions[i].Counter > 0 {
+					   	Config.Actions[i].Counter = 0;
+						if Verbose {
+							log.Debugf("Ignore 2nd call of %s\n", Config.Actions[i].Name)
+						}
+						return
+					} else {
+						Config.Actions[i].Counter++
+					}
+				}
 				for j := range Config.Actions[i].Action {
 					topic := Config.Actions[i].Action[j].Topic
 					cmd := Config.Actions[i].Action[j].Message
 					if Verbose {
-						log.Debugf("Publish: %s = %s\n", topic, cmd);
+						log.Debugf("Publish: %s = %s\n", topic, cmd)
 					}
 					client.Publish(topic, byte(Config.MQTT.QoS), Config.MQTT.Retain, cmd)
 				}

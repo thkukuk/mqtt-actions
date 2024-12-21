@@ -135,6 +135,7 @@ The action sections define, for which MQTT topic the program should look, how to
 * **trigger** is the content of the message which triggers this action.
 * **action** is a list of **topic** and **message** pairs which will be published.
 * **enabled** is by default **true** and allows to disable an action section.
+* **ignore_second** is by default **false** and allows to ignore a second activation of this action. This is usefull e.g. for Sonoff Buttons, which send the message if you press the button and if you release them.
 
 ## Environment Variables
 
