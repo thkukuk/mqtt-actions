@@ -45,3 +45,4 @@ actions:
     # Publish message "on" for 2. Shelly Plus Plug S
     - topic: shellies/shelly-plus-plug-s2/command/switch:0
       message: on
+    enabled: false
