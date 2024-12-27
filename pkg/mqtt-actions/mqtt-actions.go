@@ -101,7 +101,7 @@ func msgHandler(client mqtt.Client, msg mqtt.Message) {
 				} else {
 					log.Infof("Execute '%s'\n", Config.Actions[i].Name)
 				}
-				if Config.Actions[i].Ignore2nd != nil || *Config.Actions[i].Ignore2nd == true {
+				if Config.Actions[i].Ignore2nd != nil && *Config.Actions[i].Ignore2nd == true {
 				   	if Config.Actions[i].Counter > 0 {
 					   	Config.Actions[i].Counter = 0;
 						if Verbose {
